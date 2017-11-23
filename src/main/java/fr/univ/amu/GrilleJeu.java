@@ -3,9 +3,9 @@ package fr.univ.amu;
 
 public class GrilleJeu
 {
-    private Pair[][] matrice ;
+    private Case[][] matrice ;
 
-    public GrilleJeu(Pair[][] matrice) {
+    public GrilleJeu(Case[][] matrice) {
         this.matrice = matrice;
     }
 }
