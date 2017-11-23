@@ -1,3 +1,4 @@
 language: java
+jdk: oraclejdk9
 sudo: false
-script: mvn clean verify
+script: mvn package -Dmaven.javadoc.skip=true
