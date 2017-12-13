@@ -1,3 +1,7 @@
+notifications:
+  email:
+    - sebastien.ropsars@gmail.com
+
 language: java
 jdk: oraclejdk9
 sudo: false
