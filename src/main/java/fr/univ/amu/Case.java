@@ -4,10 +4,12 @@ public class Case {
 
     private final int valeur;
     private boolean utilise;
+    private int nbUtilisation;
 
     public Case(int valeur) {
         this.valeur = valeur;
         this.utilise = false;
+        this.nbUtilisation=0;
     }
 
     public int getValeur() {
@@ -18,8 +20,12 @@ public class Case {
         return utilise;
     }
 
-    public void changeUtilise() {
-        this.utilise = true;
+    public void utilisationCase() {
+        if(this.nbUtilisation==0 && this.valeur==1){
+            ++this.nbUtilisation;
+        } else {
+            this.utilise = true;
+        }
     }
 
     @Override
