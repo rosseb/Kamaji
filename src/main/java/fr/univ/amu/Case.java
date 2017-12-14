@@ -36,4 +36,9 @@ public class Case {
                 this.utilise==caseo.estUtilise();
     }
 
+    public void reinitialiser(){
+        this.nbUtilisation=0;
+        this.utilise=false;
+    }
+
 }

@@ -8,4 +8,12 @@ public class GrilleJeu
     public GrilleJeu(Case[][] matrice) {
         this.matrice = matrice;
     }
+
+    public void reinitialiserGrille(){
+        for (Case[] c: matrice) {
+            for (Case elem: c) {
+                elem.reinitialiser();
+            }
+        }
+    }
 }

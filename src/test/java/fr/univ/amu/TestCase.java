@@ -29,4 +29,13 @@ public class TestCase {
         c1.utilisationCase();
         assertTrue(c1.estUtilise());
     }
+
+    @Test
+    public void reinitialiserCase(){
+        Case c1 = new Case(3);
+        c1.utilisationCase();
+        assertTrue(c1.estUtilise());
+        c1.reinitialiser();
+        assertFalse(c1.estUtilise());
+    }
 }
