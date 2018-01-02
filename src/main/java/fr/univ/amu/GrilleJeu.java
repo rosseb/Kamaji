@@ -54,6 +54,11 @@ public class GrilleJeu
         return aRetourner;
     }
 
+    /**
+     * Raye une liste de case dans la matrice
+     * @param lesCasesArayer la liste des cases à rayer
+     * @return Renvoie vrai si la somme des cases correspond au pivot faux dans le cas contraire
+     */
     public boolean rayerCases(ArrayList<Case> lesCasesArayer) {
         // Retourner true si les cases ont bien été reliées entre elles
         // Retourner false si impossible de les reliers (une des cases déjà utilisée)
@@ -79,11 +84,29 @@ public class GrilleJeu
         return true;
     }
 
+    /**
+     * Reinitialise la grille en dé-rayant toutes les cases
+     */
     public void reinitialiserGrille(){
         for (Case[] c: matrice) {
             for (Case elem: c) {
                 elem.reinitialiser();
             }
         }
+    }
+
+    /**
+     * Vérifie si la grille est complétement validée est donc que le jeu est fini
+     * @return true si la grille est validé, faux sinon
+     */
+    public boolean verifierGrilleFinie(){
+        boolean etat = true;
+        for (Case [] c : matrice){
+            for (Case elem : c){
+                if (!elem.estUtilisee())
+                    etat = false;
+            }
+        }
+        return etat;
     }
 }
