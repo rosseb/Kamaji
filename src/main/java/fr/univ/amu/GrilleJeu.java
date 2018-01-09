@@ -1,13 +1,18 @@
 package fr.univ.amu;
 import java.util.ArrayList;
 
+
 public class GrilleJeu
 {
+
+
     private Case[][] matrice;
+    private static int nbCasesRaye;
     private final int valeurSomme;
 
     public GrilleJeu(int valeurSomme, int largeurGrille) {
         this.valeurSomme = valeurSomme;
+        nbCasesRaye=0;
         this.matrice = this.constituerGrilleAleatoire(largeurGrille);
     }
 
@@ -63,6 +68,7 @@ public class GrilleJeu
         // Retourner true si les cases ont bien été reliées entre elles
         // Retourner false si impossible de les reliers (une des cases déjà utilisée)
 
+
         int valeurTotale = 0;
         for (Case c : lesCasesArayer) {
             valeurTotale++;
@@ -75,10 +81,13 @@ public class GrilleJeu
         // On vérifie que la somme des cases est égale à la valeur à trouver (this.valeurSomme)
         if (valeurTotale != this.valeurSomme)
             return false;
+        if (nbCasesRaye>=8)
+            nbCasesRaye=0;
 
         // Tout est bon on peut relier les cases ensembles
         for (Case c : lesCasesArayer) {
             c.rayer();
+            c.changerCouleur(nbCasesRaye+1);
         }
 
         return true;
@@ -109,4 +118,20 @@ public class GrilleJeu
         }
         return etat;
     }
+
+    public void afficher(){
+        int cpt=0;
+        for (Case[] cTableau : matrice){
+            for (Case c : cTableau){
+                ++cpt;
+                if (cpt == 5){
+                    cpt =0;
+                    c.afficherCase();
+                    System.out.println();
+                }else
+                    c.afficherCase();
+            }
+        }
+    }
+
 }
