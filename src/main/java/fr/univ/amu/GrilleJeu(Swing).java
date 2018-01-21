@@ -1,4 +1,4 @@
-package JeuKamaji;
+/*package JeuKamaji;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -334,5 +334,5 @@ public GrilleJeu() {
 	
 
 	
-
+*/
 
