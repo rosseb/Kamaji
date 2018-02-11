@@ -10,6 +10,10 @@ public class GrilleJeu
     private static int nbCasesRaye;
     private final int valeurSomme;
 
+    // Pour algo :
+    private ArrayList<Case> lesCases;
+    private int largeurGrille;
+
     public GrilleJeu(int valeurSomme, int largeurGrille) {
         this.valeurSomme = valeurSomme;
         nbCasesRaye=0;
@@ -17,6 +21,7 @@ public class GrilleJeu
     }
 
     private Case[][] constituerGrilleAleatoire(int largeurGrille) {
+        this.largeurGrille = largeurGrille;
         // Constituer une grille résolvable
 
 
@@ -55,6 +60,35 @@ public class GrilleJeu
                                     {c11, c12, c13, c14, c15},
                                     {c16, c17, c18, c19, c20},
                                     {c21, c22, c23, c24, c25}    };
+
+        this.lesCases = new ArrayList<Case>();
+        Case c0 = new Case(0);
+        this.lesCases.add(c0);
+        this.lesCases.add(c1);
+        this.lesCases.add(c2);
+        this.lesCases.add(c3);
+        this.lesCases.add(c4);
+        this.lesCases.add(c5);
+        this.lesCases.add(c6);
+        this.lesCases.add(c7);
+        this.lesCases.add(c8);
+        this.lesCases.add(c9);
+        this.lesCases.add(c10);
+        this.lesCases.add(c11);
+        this.lesCases.add(c12);
+        this.lesCases.add(c13);
+        this.lesCases.add(c14);
+        this.lesCases.add(c15);
+        this.lesCases.add(c16);
+        this.lesCases.add(c17);
+        this.lesCases.add(c18);
+        this.lesCases.add(c19);
+        this.lesCases.add(c20);
+        this.lesCases.add(c21);
+        this.lesCases.add(c22);
+        this.lesCases.add(c23);
+        this.lesCases.add(c24);
+        this.lesCases.add(c25);
 
         return aRetourner;
     }
@@ -132,6 +166,199 @@ public class GrilleJeu
                     c.afficherCase();
             }
         }
+
+        // Debug :
+        System.out.println();
+        System.out.println("Resoudre grille : ");
+        this.resoudreGrille();
+
+        cpt=0;
+        for (Case[] cTableau : matrice){
+            for (Case c : cTableau){
+                ++cpt;
+                if (cpt == 5){
+                    cpt =0;
+                    c.afficherCase();
+                    System.out.println();
+                }else
+                    c.afficherCase();
+            }
+        }
+    }
+
+    // Algorithme pour résoudre la grille
+    public void resoudreGrille() {
+        // Commencer par les nombres forcément reliés entre eux : (nombre à trouver -1) et le chiffre 1
+        //      Parcourir la grille et chercher valeurSomme -1, si il existe le relier au 1 qui est autour de lui (par défaut on prend le premier)
+        for (Case c : this.lesCases) {
+            if (c.getValeur() == this.valeurSomme - 1) {
+                for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c))) {
+                    if (cTrouve.getValeur() == 1) {
+                        ArrayList<Case> aRayer = new ArrayList<Case>();
+                        aRayer.add(c);
+                        aRayer.add(cTrouve);
+                        this.rayerCases(aRayer);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Ensuite : Trouver nombre à trouver - 2 et regarder si il y a soit en caseAutour 2 soit un 1 qui a pour caseAutour un 1 aussi
+        // (en rayant dans le même sens, donc ajouter une variable pour le sens et éventuellement refaire une fonction)
+
+    }
+
+    // Retourne les cases autour de la case passée en paramètre = permet de connaitre les nombres autour d'elle
+    public ArrayList<Case> lesCasesAutour(int numeroCaseEnCours) {
+        ArrayList<Case> aRetourner = new ArrayList<Case>();
+        /* Les cases à retourner sont les suivantes :
+              - Gauche = Case -1
+              - Droite = Case +1
+              - Haut = Case - largeurGrille
+              - Bas = Case + largeurGrille
+              - Diagonale haut gauche = Case - largeurGrille -1
+              - Diagonale haut droit = Case - largeurGrille +1
+              - Diagonale bas gauche = Case + largeurGrille -1
+              - Diagonale bas droite = Case + largeurGrille +1
+
+              Cas particulier = Case au bord de la grille
+                - Bord gauche : pas de case à gauche, pas de diagonale gauche
+                - Bord droit : pas de case à droite, pas de diagonale droit
+                - Bord haut : pas de case au dessus (valeur inférieur à 1 donc erreur détectée)
+                - Bord bas : pas de case en dessous (valeur supérieur à nbCasestotal donc erreur détectée)
+
+
+             Pour détecter case bord : valeurCaseEnCours / largeurTotale
+                - Gauche :  = reste division euclidienne = 1
+                - Droit : reste division euclidienne nul
+                - Haut : Largeur totale <= caseEnCours
+                - Bas : Nombre total de cases - largeur totale <= caseEnCours
+        */
+
+        // Valeurs des cases autour
+        int caseGauche = numeroCaseEnCours - 1;
+        int caseDroite = numeroCaseEnCours +1;
+        int caseHaut = numeroCaseEnCours - this.largeurGrille;
+        int caseBas = numeroCaseEnCours + this.largeurGrille;
+        int caseDiagonaleHautGauche = numeroCaseEnCours - this.largeurGrille -1;
+        int caseDiagonaleHautDroit = numeroCaseEnCours - this.largeurGrille +1;
+        int caseDiagonaleBasGauche = numeroCaseEnCours + this.largeurGrille -1;
+        int caseDiagonaleBasDroite = numeroCaseEnCours + this.largeurGrille +1;
+
+        // Emplacement case
+        boolean bordGauche = numeroCaseEnCours % this.largeurGrille == 1;
+        boolean bordDroit = numeroCaseEnCours % this.largeurGrille == 0;
+        boolean bordHaut = this.largeurGrille >= numeroCaseEnCours;
+        boolean bordBas = this.lesCases.size() - this.largeurGrille <= numeroCaseEnCours;
+
+        // Détecter bord gauche
+        if (bordGauche) {
+            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+                aRetourner.add(this.lesCases.get(caseDroite));
+
+            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+                aRetourner.add(this.lesCases.get(caseHaut));
+
+            if (caseBas <= this.lesCases.size() && caseBas > 0)
+                aRetourner.add(this.lesCases.get(caseBas));
+
+            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
+
+            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
+        }
+        // Détecter le bord droit
+        else if (bordDroit) {
+            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+                aRetourner.add(this.lesCases.get(caseGauche));
+
+            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+                aRetourner.add(this.lesCases.get(caseHaut));
+
+            if (caseBas <= this.lesCases.size() && caseBas > 0)
+                aRetourner.add(this.lesCases.get(caseBas));
+
+            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
+
+            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
+
+        }
+
+        // Détecter bord haut
+        else if (bordHaut) {
+            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+                aRetourner.add(this.lesCases.get(caseGauche));
+
+            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+                aRetourner.add(this.lesCases.get(caseDroite));
+
+            if (caseBas <= this.lesCases.size() && caseBas > 0)
+                aRetourner.add(this.lesCases.get(caseBas));
+
+            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
+
+            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
+        }
+
+        // Détecter bord bas
+        else if (bordBas) {
+            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+                aRetourner.add(this.lesCases.get(caseGauche));
+
+            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+                aRetourner.add(this.lesCases.get(caseDroite));
+
+            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+                aRetourner.add(this.lesCases.get(caseHaut));
+
+            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
+
+            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
+        }
+
+        else {
+            // Signifie que ce n'est pas un cas particulier
+
+            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+                aRetourner.add(this.lesCases.get(caseGauche));
+
+            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+                aRetourner.add(this.lesCases.get(caseDroite));
+
+            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+                aRetourner.add(this.lesCases.get(caseHaut));
+
+            if (caseBas <= this.lesCases.size() && caseBas > 0)
+                aRetourner.add(this.lesCases.get(caseBas));
+
+            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
+
+            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
+
+            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
+
+            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+                aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
+        }
+
+        // Supprimer les cases déjà rayées
+        for (Case c : aRetourner) {
+            if (c.estUtilisee())
+                aRetourner.remove(c);
+        }
+
+        return aRetourner;
     }
 
 }
