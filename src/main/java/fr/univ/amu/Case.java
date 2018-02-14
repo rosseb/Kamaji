@@ -2,9 +2,6 @@ package fr.univ.amu;
 
 public class Case {
 
-    public static final String[] tableauCouleur ={"\u001B[0m","\u001B[30m","\u001B[31m","\u001B[32m","\u001B[33m",
-            "\u001B[34m","\u001B[35m","\u001B[36m}", "\u001B[37m"};
-
     private final int valeur;
     private int raye;
     private String couleur;
@@ -12,9 +9,32 @@ public class Case {
     public Case(int valeur) {
         this.valeur = valeur;
         this.raye = 0;
-        this.couleur=tableauCouleur[0];
+        this.couleur=getCouleur(0);
     }
 
+
+    public String getCouleur(int indice){
+
+
+        if (indice==1)
+            return "\u001B[30m";
+        else if (indice==2)
+            return "\u001B[31m";
+        else if (indice==3)
+            return "\u001B[32m";
+        else if (indice==4)
+            return "\u001B[33m";
+        else if (indice==5)
+            return "\u001B[34m";
+        else if (indice==6)
+            return "\u001B[35m";
+        else if (indice==7)
+            return "\u001B[36m";
+        else if (indice==8)
+            return "\u001B[37m";
+
+        return "\u001B[0m";
+    }
     public int getValeur() {
         return valeur;
     }
@@ -40,14 +60,13 @@ public class Case {
 
     public void changerCouleur(int indice){
         if (this.valeur!=1 && this.raye<2)
-            this.couleur=tableauCouleur[2];
+            this.couleur=getCouleur(indice);
     }
-
 
     public void afficherCase() {
         //Affiche la case avec sa couleur puis reconfigure la sortie en blanc
 
-        System.out.print(this.couleur+this.valeur+tableauCouleur[0]+ "  "); //Affiche la case avec sa couleur puis reconfigure la sortie en blanc
+        System.out.print(this.couleur+this.valeur+getCouleur(0)+ "  "); //Affiche la case avec sa couleur puis reconfigure la sortie en blanc
     }
 
     @Override
@@ -60,6 +79,7 @@ public class Case {
 
     public void reinitialiser(){
         this.raye=0;
+        this.couleur=getCouleur(0);
     }
 
 

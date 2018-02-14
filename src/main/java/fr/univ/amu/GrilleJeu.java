@@ -121,7 +121,7 @@ public class GrilleJeu
         // Tout est bon on peut relier les cases ensembles
         for (Case c : lesCasesArayer) {
             c.rayer();
-            c.changerCouleur(nbCasesRaye+1);
+            c.changerCouleur(++nbCasesRaye);
         }
 
         return true;
