@@ -105,7 +105,7 @@ public class GrilleJeu
 
         int valeurTotale = 0;
         for (Case c : lesCasesArayer) {
-            valeurTotale++;
+            valeurTotale += c.getValeur();
             if (c.estUtilisee())
                 return false;
         }
@@ -184,6 +184,10 @@ public class GrilleJeu
                     c.afficherCase();
             }
         }
+
+        // Debug :
+        System.out.println();
+        System.out.println("Fin");
     }
 
     // Algorithme pour résoudre la grille
@@ -193,12 +197,14 @@ public class GrilleJeu
         for (Case c : this.lesCases) {
             if (c.getValeur() == this.valeurSomme - 1) {
                 for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c))) {
-                    if (cTrouve.getValeur() == 1) {
-                        ArrayList<Case> aRayer = new ArrayList<Case>();
-                        aRayer.add(c);
-                        aRayer.add(cTrouve);
-                        this.rayerCases(aRayer);
-                        break;
+                    if (cTrouve != null) {
+                        if (cTrouve.getValeur() == 1) {
+                            ArrayList<Case> aRayer = new ArrayList<Case>();
+                            aRayer.add(c);
+                            aRayer.add(cTrouve);
+                            this.rayerCases(aRayer);
+                            break;
+                        }
                     }
                 }
             }
@@ -353,9 +359,12 @@ public class GrilleJeu
         }
 
         // Supprimer les cases déjà rayées
-        for (Case c : aRetourner) {
-            if (c.estUtilisee())
-                aRetourner.remove(c);
+
+        for (int i = 0; i < aRetourner.size(); i++) {
+            if (aRetourner.get(i).estUtilisee()) {
+                aRetourner.remove(aRetourner.get(i));
+                i--;
+            }
         }
 
         return aRetourner;
