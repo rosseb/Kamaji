@@ -118,10 +118,12 @@ public class GrilleJeu
         if (nbCasesRaye>=8)
             nbCasesRaye=0;
 
+        nbCasesRaye++;
+
         // Tout est bon on peut relier les cases ensembles
         for (Case c : lesCasesArayer) {
             c.rayer();
-            c.changerCouleur(++nbCasesRaye);
+            c.changerCouleur(nbCasesRaye);
         }
 
         return true;

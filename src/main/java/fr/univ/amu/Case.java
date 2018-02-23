@@ -32,6 +32,8 @@ public class Case {
             return "\u001B[36m";
         else if (indice==8)
             return "\u001B[37m";
+        else if (indice==9)
+            return "\033[1;30m";
 
         return "\u001B[0m";
     }
@@ -59,8 +61,9 @@ public class Case {
     }
 
     public void changerCouleur(int indice){
-        if (this.valeur!=1 && this.raye<2)
-            this.couleur=getCouleur(indice);
+        this.couleur=getCouleur(indice);
+        if (this.raye == 2)
+            this.couleur = getCouleur(9);
     }
 
     public void afficherCase() {
