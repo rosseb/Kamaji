@@ -15,7 +15,6 @@ public class Case {
 
     public String getCouleur(int indice){
 
-
         if (indice==1)
             return "\u001B[30m";
         else if (indice==2)
@@ -37,6 +36,7 @@ public class Case {
 
         return "\u001B[0m";
     }
+
     public int getValeur() {
         return valeur;
     }
@@ -84,6 +84,4 @@ public class Case {
         this.raye=0;
         this.couleur=getCouleur(0);
     }
-
-
 }

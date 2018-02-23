@@ -197,20 +197,46 @@ public class GrilleJeu
         // Commencer par les nombres forcément reliés entre eux : (nombre à trouver -1) et le chiffre 1
         //      Parcourir la grille et chercher valeurSomme -1, si il existe le relier au 1 qui est autour de lui (par défaut on prend le premier)
         for (Case c : this.lesCases) {
-            if (c.getValeur() == this.valeurSomme - 1) {
-                for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c))) {
-                    if (cTrouve != null) {
-                        if (cTrouve.getValeur() == 1) {
-                            ArrayList<Case> aRayer = new ArrayList<Case>();
-                            aRayer.add(c);
-                            aRayer.add(cTrouve);
-                            this.rayerCases(aRayer);
-                            break;
+            if (!c.estUtilisee()) {
+                if (c.getValeur() == this.valeurSomme - 1) {
+                    for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c))) {
+                        if (cTrouve != null) {
+                            if (cTrouve.getValeur() == 1) {
+                                ArrayList<Case> aRayer = new ArrayList<Case>();
+                                aRayer.add(c);
+                                aRayer.add(cTrouve);
+                                this.rayerCases(aRayer);
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
+
+        // Nombre reliés par 2 (ex 3 et 2 pour 5, 4 et 1 pour 5)
+        for (Case c : this.lesCases) {
+            if (!c.estUtilisee()) {
+                for (int i = this.valeurSomme - 2; i > 1; i--) {
+                    if (c.getValeur() == i) {
+                        for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c))) {
+                            if (cTrouve != null) {
+                                if (cTrouve.getValeur() == this.valeurSomme - i) {
+                                    ArrayList<Case> aRayer = new ArrayList<Case>();
+                                    aRayer.add(c);
+                                    aRayer.add(cTrouve);
+                                    this.rayerCases(aRayer);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
 
         // Ensuite : Trouver nombre à trouver - 2 et regarder si il y a soit en caseAutour 2 soit un 1 qui a pour caseAutour un 1 aussi
         // (en rayant dans le même sens, donc ajouter une variable pour le sens et éventuellement refaire une fonction)
