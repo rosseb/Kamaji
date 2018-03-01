@@ -244,7 +244,7 @@ public class GrilleJeu
     }
 
     // Retourne les cases autour de la case passée en paramètre = permet de connaitre les nombres autour d'elle
-    public ArrayList<Case> lesCasesAutour(int numeroCaseEnCours) {
+    public ArrayList<Case> lesCasesAutour(int numeroCaseEnCours/*, String sens*/) {
         ArrayList<Case> aRetourner = new ArrayList<Case>();
         /* Les cases à retourner sont les suivantes :
               - Gauche = Case -1
@@ -268,6 +268,16 @@ public class GrilleJeu
                 - Droit : reste division euclidienne nul
                 - Haut : Largeur totale <= caseEnCours
                 - Bas : Nombre total de cases - largeur totale <= caseEnCours
+
+             Les différents sens possible :
+                - G : gauche
+                - D : droite
+                - H : haut
+                - B : bas
+                - HG : diagonale gauche
+                - HD : diagonale droite
+                - BG & BD : diagonale gauche et diagonale droite
+
         */
 
         // Valeurs des cases autour
@@ -361,28 +371,28 @@ public class GrilleJeu
         else {
             // Signifie que ce n'est pas un cas particulier
 
-            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+            if (caseGauche <= this.lesCases.size() && caseGauche > 0 /*&& sens.equals("G")*/)
                 aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+            if (caseDroite <= this.lesCases.size() && caseDroite > 0/* && sens.equals("D")*/)
                 aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+            if (caseHaut <= this.lesCases.size() && caseHaut > 0 /*&& sens.equals("H")*/)
                 aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (caseBas <= this.lesCases.size() && caseBas > 0)
+            if (caseBas <= this.lesCases.size() && caseBas > 0 /*&& sens.equals("B")*/)
                 aRetourner.add(this.lesCases.get(caseBas));
 
-            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0 /*&& sens.equals("HG")*/)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
 
-            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0 /*&& sens.equals("HD")*/)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
 
-            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0 /*&& sens.equals("BG")*/)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
 
-            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0/* && sens.equals("BD")*/)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
         }
 
