@@ -270,13 +270,14 @@ public class GrilleJeu
                 - Bas : Nombre total de cases - largeur totale <= caseEnCours
 
              Les différents sens possible :
+                - T : pas de préférence
                 - G : gauche
                 - D : droite
                 - H : haut
                 - B : bas
                 - HG : diagonale gauche
                 - HD : diagonale droite
-                - BG & BD : diagonale gauche et diagonale droite
+                - BG & BD : diagonale gauche et diagonale droite
 
         */
 
@@ -298,101 +299,101 @@ public class GrilleJeu
 
         // Détecter bord gauche
         if (bordGauche) {
-            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+            if (/*(sens.equals("T") || sens.equals("D")) &&*/ caseDroite <= this.lesCases.size() && caseDroite > 0)
                 aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+            if (/*(sens.equals("T") || sens.equals("H")) && */ caseHaut <= this.lesCases.size() && caseHaut > 0)
                 aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (caseBas <= this.lesCases.size() && caseBas > 0)
+            if (/*(sens.equals("T") || sens.equals("B")) && */caseBas <= this.lesCases.size() && caseBas > 0)
                 aRetourner.add(this.lesCases.get(caseBas));
 
-            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+            if (/*(sens.equals("T") || sens.equals("HG")) && */caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
 
-            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+            if (/*(sens.equals("T") || sens.equals("BG")) && */caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
         }
         // Détecter le bord droit
         else if (bordDroit) {
-            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+            if (/*(sens.equals("T") || sens.equals("G")) &&*/ caseGauche <= this.lesCases.size() && caseGauche > 0)
                 aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+            if (/*(sens.equals("T") || sens.equals("H")) &&*/caseHaut <= this.lesCases.size() && caseHaut > 0)
                 aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (caseBas <= this.lesCases.size() && caseBas > 0)
+            if (/*(sens.equals("T") || sens.equals("B")) &&*/caseBas <= this.lesCases.size() && caseBas > 0)
                 aRetourner.add(this.lesCases.get(caseBas));
 
-            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+            if (/*(sens.equals("T") || sens.equals("HG")) &&*/caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
 
-            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+            if (/*(sens.equals("T") || sens.equals("BG")) &&*/caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
 
         }
 
         // Détecter bord haut
         else if (bordHaut) {
-            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+            if (/*(sens.equals("T") || sens.equals("G")) &&*/caseGauche <= this.lesCases.size() && caseGauche > 0)
                 aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+            if (/*(sens.equals("T") || sens.equals("D")) &&*/caseDroite <= this.lesCases.size() && caseDroite > 0)
                 aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (caseBas <= this.lesCases.size() && caseBas > 0)
+            if (/*(sens.equals("T") || sens.equals("B")) &&*/caseBas <= this.lesCases.size() && caseBas > 0)
                 aRetourner.add(this.lesCases.get(caseBas));
 
-            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+            if (/*(sens.equals("T") || sens.equals("BG")) &&*/caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
 
-            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+            if (/*(sens.equals("T") || sens.equals("BD")) &&*/caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
         }
 
         // Détecter bord bas
         else if (bordBas) {
-            if (caseGauche <= this.lesCases.size() && caseGauche > 0)
+            if (/*(sens.equals("T") || sens.equals("G")) &&*/caseGauche <= this.lesCases.size() && caseGauche > 0)
                 aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (caseDroite <= this.lesCases.size() && caseDroite > 0)
+            if (/*(sens.equals("T") || sens.equals("D")) &&*/caseDroite <= this.lesCases.size() && caseDroite > 0)
                 aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (caseHaut <= this.lesCases.size() && caseHaut > 0)
+            if (/*(sens.equals("T") || sens.equals("H")) &&*/caseHaut <= this.lesCases.size() && caseHaut > 0)
                 aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+            if (/*(sens.equals("T") || sens.equals("HG")) &&*/caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
 
-            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+            if (/*(sens.equals("T") || sens.equals("HD")) &&*/caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
         }
 
         else {
             // Signifie que ce n'est pas un cas particulier
 
-            if (caseGauche <= this.lesCases.size() && caseGauche > 0 /*&& sens.equals("G")*/)
+            if (/*(sens.equals("T") || sens.equals("G")) && */caseGauche <= this.lesCases.size() && caseGauche > 0)
                 aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (caseDroite <= this.lesCases.size() && caseDroite > 0/* && sens.equals("D")*/)
+            if (/*(sens.equals("T") || sens.equals("D")) && */caseDroite <= this.lesCases.size() && caseDroite > 0)
                 aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (caseHaut <= this.lesCases.size() && caseHaut > 0 /*&& sens.equals("H")*/)
+            if (/*(sens.equals("T") || sens.equals("H")) && */caseHaut <= this.lesCases.size() && caseHaut > 0)
                 aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (caseBas <= this.lesCases.size() && caseBas > 0 /*&& sens.equals("B")*/)
+            if (/*(sens.equals("T") || sens.equals("B")) &&*/ caseBas <= this.lesCases.size() && caseBas > 0)
                 aRetourner.add(this.lesCases.get(caseBas));
 
-            if (caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0 /*&& sens.equals("HG")*/)
+            if (/*(sens.equals("T") || sens.equals("HG")) &&*/ caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
 
-            if (caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0 /*&& sens.equals("HD")*/)
+            if (/*(sens.equals("T") || sens.equals("HD")) && */caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
 
-            if (caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0 /*&& sens.equals("BG")*/)
+            if (/*(sens.equals("T") || sens.equals("BG")) && */caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
 
-            if (caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0/* && sens.equals("BD")*/)
+            if (/*(sens.equals("T") || sens.equals("BD")) && */caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
                 aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
         }
 
