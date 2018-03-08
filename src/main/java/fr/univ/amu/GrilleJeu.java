@@ -238,10 +238,72 @@ public class GrilleJeu
 
 
 
+
+
         // Ensuite : Trouver nombre à trouver - 2 et regarder si il y a soit en caseAutour 2 soit un 1 qui a pour caseAutour un 1 aussi
         // (en rayant dans le même sens, donc ajouter une variable pour le sens et éventuellement refaire une fonction)
+    }
+
+    public void relierCases(){
+
+        // Les cases avec relier directement
+        for(Case c : this.lesCases){
+            if(!c.estUtilisee()) {
+                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c))) {
+                    if (c.getValeur() + ct.getValeur() == this.valeurSomme) {
+                        ArrayList<Case> aRayer = new ArrayList<Case>();
+                        aRayer.add(c);
+                        aRayer.add(ct);
+                        this.rayerCases(aRayer);
+                        break;
+                    }
+                }
+            }
+        }
+
+        //Case à relier séparé par une case
+        for(Case c : this.lesCases){
+            if(!c.estUtilisee()) {
+                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c))){
+                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct))){
+                        if ( !ct2.estUtilisee() && !ct.estUtilisee()&& c.getValeur()+ct.getValeur()+ct2.getValeur()==this.valeurSomme){
+                            ArrayList<Case> aRayer = new ArrayList<Case>();
+                            aRayer.add(c);
+                            aRayer.add(ct);
+                            aRayer.add(ct2);
+                            this.rayerCases(aRayer);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        //Case à relier séparé par deux cases
+        for(Case c : this.lesCases){
+            if(!c.estUtilisee()) {
+                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c))){
+                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct))){
+                        for (Case ct3 : lesCasesAutour(this.lesCases.indexOf(ct2))){
+                            if ( !ct3.estUtilisee() && !ct2.estUtilisee() && !ct.estUtilisee()&& ct3.getValeur()+c.getValeur()+ct.getValeur()+ct2.getValeur()==this.valeurSomme){
+                                ArrayList<Case> aRayer = new ArrayList<Case>();
+                                aRayer.add(c);
+                                aRayer.add(ct);
+                                aRayer.add(ct2);
+                                aRayer.add(ct3);
+                                this.rayerCases(aRayer);
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
 
     }
+
 
     // Retourne les cases autour de la case passée en paramètre = permet de connaitre les nombres autour d'elle
     public ArrayList<Case> lesCasesAutour(int numeroCaseEnCours/*, String sens*/) {
