@@ -224,7 +224,6 @@ public class GrilleJeu
                 }
             }
         }
-
         return modifs;
     }
 
