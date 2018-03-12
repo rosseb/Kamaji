@@ -1,4 +1,5 @@
 package fr.univ.amu;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -155,7 +156,8 @@ public class GrilleJeu
         return etat;
     }
 
-    public void afficher(){
+    public void afficherLaGrille() {
+        System.out.println();
         int cpt=0;
         for (Case[] cTableau : matrice){
             for (Case c : cTableau){
@@ -168,28 +170,79 @@ public class GrilleJeu
                     c.afficherCase();
             }
         }
+        System.out.println();
+    }
+
+    public void afficher(){
+        this.afficherLaGrille();
+
 
         // Debug :
         System.out.println();
+        while(trouverCasObligatoires())
+            this.trouverCasObligatoires();
+
+        // Afficher grille :
+        this.afficherLaGrille();
+
+
+        /*
         System.out.println("Resoudre grille : ");
         this.resoudreGrille();
 
-        cpt=0;
-        for (Case[] cTableau : matrice){
-            for (Case c : cTableau){
-                ++cpt;
-                if (cpt == 5){
-                    cpt =0;
-                    c.afficherCase();
-                    System.out.println();
-                }else
-                    c.afficherCase();
-            }
-        }
+                this.afficherLaGrille();
+        */
 
         // Debug :
         System.out.println();
         System.out.println("Fin");
+    }
+
+    // Par exemple un 4 avec un seul 1 autour de lui => Il est forcémment rayé avec ce 1 là
+    // On retourne true si on a rayer des cases pour savoir si cela sert à quelque chose de rappeler la fonction ou pas
+    public boolean trouverCasObligatoires() {
+        boolean modifs = false;
+        int indexDeLaCase = -1;
+
+        // Pour les nombres reliés par deux
+        for (int i = 1; i < this.valeurSomme / 2 + 1; i++) {
+            indexDeLaCase = -1;
+            for (Case c : this.lesCases) {
+                indexDeLaCase++;
+                if (!c.estUtilisee()) {
+                    if (c.getValeur() == this.valeurSomme - i) {
+                        ArrayList<Case> aRayer = new ArrayList<Case>();
+                        aRayer.add(c);
+                        aRayer.add(this.trierCasesAutour(this.lesCasesAutour(indexDeLaCase), i));
+
+                        // Si trierCasesAutour n'a pas retourné null on raye
+                        if (!aRayer.contains(null)) {
+                            this.rayerCases(aRayer);
+                            modifs = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return modifs;
+    }
+
+    // Passer une liste de cases, si parmis ces cases il n'y a qu'une fois le chiffre que l'on cherche (exemple : 1) on renvoi la case en question
+    // Retourne null si la valeur n'y est pas
+    public Case trierCasesAutour(ArrayList<Case> lesCases, int valeurCherchee) {
+        int compteur = 0;
+        Case aRetourner = new Case(0);
+        for (Case c : lesCases) {
+            if (c.getValeur() == valeurCherchee) {
+                compteur++;
+                aRetourner = c;
+            }
+        }
+        if (compteur == 1)
+            return aRetourner;
+        else
+            return null;
     }
 
     // Algorithme pour résoudre la grille
@@ -460,7 +513,6 @@ public class GrilleJeu
         }
 
         // Supprimer les cases déjà rayées
-
         for (int i = 0; i < aRetourner.size(); i++) {
             if (aRetourner.get(i).estUtilisee()) {
                 aRetourner.remove(aRetourner.get(i));
