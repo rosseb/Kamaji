@@ -59,7 +59,7 @@ public class Case {
 
     public void changerCouleur(int indice){
         this.couleur=getCouleur(indice);
-        if (this.raye == 2)
+        if (this.raye >= 2)
             this.couleur = getCouleur(9);
     }
 

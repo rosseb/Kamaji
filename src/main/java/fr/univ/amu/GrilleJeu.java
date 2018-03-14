@@ -91,6 +91,9 @@ public class GrilleJeu
         this.lesCases.add(c24);
         this.lesCases.add(c25);
 
+        // Rayer la case 5 pour dire qu'on ne peut pas l'utiliser
+        c13.rayer();
+
         return aRetourner;
     }
 
@@ -147,11 +150,9 @@ public class GrilleJeu
      */
     public boolean verifierGrilleFinie(){
         boolean etat = true;
-        for (Case [] c : matrice){
-            for (Case elem : c){
-                if (!elem.estUtilisee())
-                    etat = false;
-            }
+        for (Case c : this.lesCases) {
+            if ((c.estUtilisee()) && c.getValeur() <= 1)
+                etat = false;
         }
         return etat;
     }
@@ -174,6 +175,7 @@ public class GrilleJeu
     }
 
     public void afficher(){
+        // On affiche la grille non résolue
         this.afficherLaGrille();
 
 
@@ -185,15 +187,14 @@ public class GrilleJeu
         // Afficher grille :
         this.afficherLaGrille();
 
+        // On vérifie si elle est finie :
+        if (verifierGrilleFinie())
+            System.out.println("\n Grille résolue !");
+        else
+            System.out.println("\n Aucune solution n'a été trouvée.");
 
-        /*
-        System.out.println("Resoudre grille : ");
-        this.resoudreGrille();
 
-                this.afficherLaGrille();
-        */
 
-        // Debug :
         System.out.println();
         System.out.println("Fin");
     }
@@ -230,35 +231,48 @@ public class GrilleJeu
         if (!modifs) {
             // Sens possibles :
             // Ligne : à gauche OU à droite de la case ---- en bas OU au dessus de la case
-            // Tests : Juste à gauche (1), juste à droite (2), juste en bas (3), juste en haut (4), a gauche puis à droite (5), en haut puis en bas (6)
+            // Tests : Juste à gauche (1), juste à droite (1), juste en bas (2), juste en haut (2)
 
             // Diagonale : avant ou après en diagonale gauche ou droite
-            // tests : Diagonale droite juste en bas (7), diagonale droite juste en haut (8), diagonale gauche juste en bas (9), diagonale gauche juste en haut (10), diagonale avant après x2 (12)
+            // tests : Diagonale droite juste en bas (3), diagonale droite juste en haut (4), diagonale gauche juste en bas (4), diagonale gauche juste en haut (3)
+
+            // Si ça trouve une ligne à droite d'une case, ça trouvera aussi la ligne mais vers la gauche quand on sera sur la case la plus à droite
+            // Donc inutile de tester une ligne vers la droite ET une ligne vers la gauche...
 
             // On test toutes les solutions possible, si il y en a plus que une on ne fait rien
             int solutionsTrouvees = 0;
             Case caseTestee = new Case(0);
             indexDeLaCase = -1;
             ArrayList<Case> aRayer = new ArrayList<Case>();
+            ArrayList<Case> premiereSolution = new ArrayList<Case>();
+            int indexCaseTestee = 0;
+
+            int debug = 0;
 
             // On parcours toutes les cases
             for (Case c : this.lesCases) {
                 indexDeLaCase++;
-
+                solutionsTrouvees = 0;
                 if (!c.estUtilisee()) {
 
                     int sommeAtrouver = this.valeurSomme - c.getValeur();
                     int sommeEnCours = 0;
 
+                    //Debug :
+                    if (indexDeLaCase == 10)
+                        debug = 1;
+
                     // On test nos 12 cas (note : la fonction lesCasesAutour retourne soit une case soit rien du tout si elle est déjà utilisée)
-                    for (int i = 1; i < 13 && solutionsTrouvees < 2; i++) {
+                    for (int i = 1; i < 5; i++) {
                         switch (i) {
                             case 1:
                                 // Tant que la sommeAtrouver est inférieur à la somme qu'on a déjà réussi à "construire" avec les cases, on cherche plus loin
-                                int indexCaseTestee = indexDeLaCase;
+                                indexCaseTestee = indexDeLaCase;
+                                aRayer = new ArrayList<Case>();
+                                aRayer.add(c);
                                 while (sommeAtrouver > sommeEnCours && indexCaseTestee > 0) {
-                                    if (this.lesCasesAutour(indexCaseTestee, "G").size() != 0)
-                                        caseTestee = this.lesCasesAutour(indexCaseTestee, "G").get(0);
+                                    if (this.lesCasesAutour(indexCaseTestee, "D").size() != 0)
+                                        caseTestee = this.lesCasesAutour(indexCaseTestee, "D").get(0);
                                     else
                                         caseTestee = null;
 
@@ -266,42 +280,106 @@ public class GrilleJeu
                                         if (caseTestee.getValeur() <= sommeAtrouver - sommeEnCours) {
                                             // On se prépare pour tester plus loin (si la caleur de la case était égale à SommeAtrouver - sommeEnCours la boucle s'arrêtera donc ce n'est pas grave de laisser
                                             // indexCaseTestee = ...
-                                            indexCaseTestee = this.lesCases.indexOf(caseTestee);
+                                            indexCaseTestee++;
                                             sommeEnCours += caseTestee.getValeur();
 
-                                            aRayer.add(c);
                                             aRayer.add(caseTestee);
-
-                                            solutionsTrouvees++;
                                         }
-                                        else
-                                            aRayer = new ArrayList<Case>();
+                                        if (sommeAtrouver == sommeEnCours) {
+                                            solutionsTrouvees++;
+                                            premiereSolution = new ArrayList<>(aRayer);
+                                        }
                                     }
                                     else
                                         indexCaseTestee = -1;
                                 }
                                 break;
                             case 2:
+                                // Tant que la sommeAtrouver est inférieur à la somme qu'on a déjà réussi à "construire" avec les cases, on cherche plus loin
+                                indexCaseTestee = indexDeLaCase;
+                                aRayer = new ArrayList<Case>();
+                                aRayer.add(c);
+                                while (sommeAtrouver > sommeEnCours && indexCaseTestee > 0) {
+                                    if (this.lesCasesAutour(indexCaseTestee, "B").size() != 0)
+                                        caseTestee = this.lesCasesAutour(indexCaseTestee, "B").get(0);
+                                    else
+                                        caseTestee = null;
+
+                                    if (caseTestee != null) {
+                                        if (caseTestee.getValeur() <= sommeAtrouver - sommeEnCours) {
+                                            // On se prépare pour tester plus loin (si la caleur de la case était égale à SommeAtrouver - sommeEnCours la boucle s'arrêtera donc ce n'est pas grave de laisser
+                                            // indexCaseTestee = ...
+                                            indexCaseTestee += this.largeurGrille;
+                                            sommeEnCours += caseTestee.getValeur();
+
+                                            aRayer.add(caseTestee);
+                                        }
+                                        if (sommeAtrouver == sommeEnCours) {
+                                            solutionsTrouvees++;
+                                            premiereSolution = new ArrayList<>(aRayer);
+                                        }
+                                    }
+                                    else
+                                        indexCaseTestee = -1;
+                                }
                                 break;
                             case 3:
+                                // Tant que la sommeAtrouver est inférieur à la somme qu'on a déjà réussi à "construire" avec les cases, on cherche plus loin
+                                indexCaseTestee = indexDeLaCase;
+                                aRayer = new ArrayList<Case>();
+                                aRayer.add(c);
+                                while (sommeAtrouver > sommeEnCours && indexCaseTestee > 0) {
+                                    if (this.lesCasesAutour(indexCaseTestee, "BD").size() != 0)
+                                        caseTestee = this.lesCasesAutour(indexCaseTestee, "BD").get(0);
+                                    else
+                                        caseTestee = null;
+
+                                    if (caseTestee != null) {
+                                        if (caseTestee.getValeur() <= sommeAtrouver - sommeEnCours) {
+                                            // On se prépare pour tester plus loin (si la caleur de la case était égale à SommeAtrouver - sommeEnCours la boucle s'arrêtera donc ce n'est pas grave de laisser
+                                            // indexCaseTestee = ...
+                                            indexCaseTestee += this.largeurGrille +1;
+                                            sommeEnCours += caseTestee.getValeur();
+
+                                            aRayer.add(caseTestee);
+                                        }
+                                        if (sommeAtrouver == sommeEnCours) {
+                                            solutionsTrouvees++;
+                                            premiereSolution = new ArrayList<>(aRayer);
+                                        }
+                                    }
+                                    else
+                                        indexCaseTestee = -1;
+                                }
                                 break;
                             case 4:
-                                break;
-                            case 5:
-                                break;
-                            case 6:
-                                break;
-                            case 7:
-                                break;
-                            case 8:
-                                break;
-                            case 9:
-                                break;
-                            case 10:
-                                break;
-                            case 11:
-                                break;
-                            case 12:
+                                // Tant que la sommeAtrouver est inférieur à la somme qu'on a déjà réussi à "construire" avec les cases, on cherche plus loin
+                                indexCaseTestee = indexDeLaCase;
+                                aRayer = new ArrayList<Case>();
+                                aRayer.add(c);
+                                while (sommeAtrouver > sommeEnCours && indexCaseTestee > 0) {
+                                    if (this.lesCasesAutour(indexCaseTestee, "BG").size() != 0)
+                                        caseTestee = this.lesCasesAutour(indexCaseTestee, "BG").get(0);
+                                    else
+                                        caseTestee = null;
+
+                                    if (caseTestee != null) {
+                                        if (caseTestee.getValeur() <= sommeAtrouver - sommeEnCours) {
+                                            // On se prépare pour tester plus loin (si la caleur de la case était égale à SommeAtrouver - sommeEnCours la boucle s'arrêtera donc ce n'est pas grave de laisser
+                                            // indexCaseTestee = ...
+                                            indexCaseTestee += this.largeurGrille -1;
+                                            sommeEnCours += caseTestee.getValeur();
+
+                                            aRayer.add(caseTestee);
+                                        }
+                                        if (sommeAtrouver == sommeEnCours) {
+                                            solutionsTrouvees++;
+                                            premiereSolution = new ArrayList<>(aRayer);
+                                        }
+                                    }
+                                    else
+                                        indexCaseTestee = -1;
+                                }
                                 break;
                             default:
                                 break;
@@ -309,11 +387,11 @@ public class GrilleJeu
 
                     }
                 }
-            }
-
-            // Si on a trouvé qu'une solution
-            if (solutionsTrouvees == 1) {
-                this.rayerCases(aRayer);
+                // Si on a trouvé qu'une solution
+                if (solutionsTrouvees == 1) {
+                    // On élimine les doublons
+                    this.rayerCases(premiereSolution);
+                }
             }
         }
 
@@ -321,6 +399,8 @@ public class GrilleJeu
 
         return modifs;
     }
+
+
 
     // Passer une liste de cases, si parmis ces cases il n'y a qu'une fois le chiffre que l'on cherche (exemple : 1) on renvoi la case en question
     // Retourne null si la valeur n'y est pas
