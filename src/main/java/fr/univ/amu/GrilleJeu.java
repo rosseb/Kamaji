@@ -5,28 +5,19 @@ import java.util.ArrayList;
 
 public class GrilleJeu
 {
-
-
-    private Case[][] matrice;
     private static int nbCasesRaye;
     private final int valeurSomme;
-
-    // Pour algo :
     private ArrayList<Case> lesCases;
     private int largeurGrille;
 
     public GrilleJeu(int valeurSomme, int largeurGrille) {
         this.valeurSomme = valeurSomme;
         nbCasesRaye=0;
-        this.matrice = this.constituerGrilleAleatoire(largeurGrille);
+        this.constituerGrille(largeurGrille);
     }
 
-    private Case[][] constituerGrilleAleatoire(int largeurGrille) {
+    private void constituerGrille(int largeurGrille) {
         this.largeurGrille = largeurGrille;
-        // Constituer une grille résolvable
-
-
-        // PROVISOIRE : Grille trouvée sur internet, il faudra remplacer par un algo qui créé une grille pour laquelle il existe au moins une solution
 
         // Créer tous les objets cases (la grille : http://prntscr.com/ht2bjl)
         Case c1 = new Case(3);
@@ -54,13 +45,6 @@ public class GrilleJeu
         Case c23 = new Case(1);
         Case c24 = new Case(3);
         Case c25 = new Case(3);
-
-
-        Case[][] aRetourner =   {   {c1, c2, c3, c4, c5},
-                                    {c6, c7, c8, c9, c10},
-                                    {c11, c12, c13, c14, c15},
-                                    {c16, c17, c18, c19, c20},
-                                    {c21, c22, c23, c24, c25}    };
 
         this.lesCases = new ArrayList<Case>();
         Case c0 = new Case(0);
@@ -93,32 +77,27 @@ public class GrilleJeu
 
         // Rayer la case 5 pour dire qu'on ne peut pas l'utiliser
         c13.rayer();
-
-        return aRetourner;
     }
 
-    /**
-     * Raye une liste de case dans la matrice
-     * @param lesCasesArayer la liste des cases à rayer
-     * @return Renvoie vrai si la somme des cases correspond au pivot faux dans le cas contraire
-     */
+
+    // Raye une liste de case dans la matrice
+    // Retourner true si les cases ont bien été reliées entre elles
+    // Retourner false si impossible de les reliers (une des cases déjà utilisée)
     public boolean rayerCases(ArrayList<Case> lesCasesArayer) {
-        // Retourner true si les cases ont bien été reliées entre elles
-        // Retourner false si impossible de les reliers (une des cases déjà utilisée)
-
-
         int valeurTotale = 0;
+
+        // On vérifie si une des cases à rayer n'est pas déjà rayée (sauf si c'est un 1 là on peut la rayer autant que souhaité)
         for (Case c : lesCasesArayer) {
             valeurTotale += c.getValeur();
             if (c.estUtilisee())
                 return false;
         }
 
-        // Si aucune des cases n'est déjà utilisée (rappel : la fonction estUtilisee() gère seule le fait que 1 peut être rayé 2 fois)
-
-        // On vérifie que la somme des cases est égale à la valeur à trouver (this.valeurSomme)
+        // Si aucune des cases n'est déjà utilisée, on vérifie que la somme des cases est égale à la valeur à trouver (this.valeurSomme)
         if (valeurTotale != this.valeurSomme)
             return false;
+
+        // Pour la gestion de la couleur (avoir une couleur qui change à chaque nouveau groupe de cases reliées)
         if (nbCasesRaye>=8)
             nbCasesRaye=0;
 
@@ -130,24 +109,20 @@ public class GrilleJeu
             c.changerCouleur(nbCasesRaye);
         }
 
+        // Si on en est là c'est qu'il n'y avait aucune raison de retourner false, on peut donc retourner true
         return true;
     }
 
-    /**
-     * Reinitialise la grille en dé-rayant toutes les cases
-     */
+
+    // Remet toutes les cases à 0
     public void reinitialiserGrille(){
-        for (Case[] c: matrice) {
-            for (Case elem: c) {
-                elem.reinitialiser();
-            }
+        for (Case c : this.lesCases) {
+            c.reinitialiser();
         }
     }
 
-    /**
-     * Vérifie si la grille est complétement validée est donc que le jeu est fini
-     * @return true si la grille est validé, faux sinon
-     */
+
+    // Vérifie si la grille est complètement résolue (true) ou si il reste des cases non rayées (false)
     public boolean verifierGrilleFinie(){
         boolean etat = true;
         for (Case c : this.lesCases) {
@@ -157,30 +132,42 @@ public class GrilleJeu
         return etat;
     }
 
+
+    // Afficher la grille dans son état en cours
     public void afficherLaGrille() {
-        System.out.println();
-        int cpt=0;
-        for (Case[] cTableau : matrice){
-            for (Case c : cTableau){
-                ++cpt;
-                if (cpt == 5){
-                    cpt =0;
-                    c.afficherCase();
-                    System.out.println();
-                }else
-                    c.afficherCase();
+        ecrireDansConsole("");
+        int compteur=0;
+
+        // for et pas foreach car on ne veut pas afficher le premier element (une case 0)
+        for (int i = 1; i < this.lesCases.size(); i++) {
+            compteur++;
+            if (compteur == 5) {
+                compteur = 0;
+                this.lesCases.get(i).afficherCase();
+                ecrireDansConsole("");
             }
+            else
+                this.lesCases.get(i).afficherCase();
         }
-        System.out.println();
+
+        ecrireDansConsole("");
     }
 
+
+    // Ecrit le texte passé en paramètre dans la console
+    public void ecrireDansConsole(String texte) {
+        System.out.println(texte);
+    }
+
+
+    // Afficher la résolution de grille
     public void afficher(){
         // On affiche la grille non résolue
         this.afficherLaGrille();
 
 
         // Debug :
-        System.out.println();
+        ecrireDansConsole("");
         while(trouverCasObligatoires())
             this.trouverCasObligatoires();
 
@@ -189,15 +176,15 @@ public class GrilleJeu
 
         // On vérifie si elle est finie :
         if (verifierGrilleFinie())
-            System.out.println("\n Grille résolue !");
+            ecrireDansConsole("\nGrille résolue !");
         else
-            System.out.println("\n Aucune solution n'a été trouvée.");
+            ecrireDansConsole("\nAucune solution n'a été trouvée.");
 
 
-
-        System.out.println();
-        System.out.println("Fin");
+        ecrireDansConsole("");
+        ecrireDansConsole("Fin");
     }
+
 
     // Par exemple un 4 avec un seul 1 autour de lui => Il est forcémment rayé avec ce 1 là
     // On retourne true si on a rayer des cases pour savoir si cela sert à quelque chose de rappeler la fonction ou pas
@@ -395,11 +382,8 @@ public class GrilleJeu
             }
         }
 
-
-
         return modifs;
     }
-
 
 
     // Passer une liste de cases, si parmis ces cases il n'y a qu'une fois le chiffre que l'on cherche (exemple : 1) on renvoi la case en question
@@ -417,118 +401,6 @@ public class GrilleJeu
             return aRetourner;
         else
             return null;
-    }
-
-    // Algorithme pour résoudre la grille
-    public void resoudreGrille() {
-        // Commencer par les nombres forcément reliés entre eux : (nombre à trouver -1) et le chiffre 1
-        //      Parcourir la grille et chercher valeurSomme -1, si il existe le relier au 1 qui est autour de lui (par défaut on prend le premier)
-        for (Case c : this.lesCases) {
-            if (!c.estUtilisee()) {
-                if (c.getValeur() == this.valeurSomme - 1) {
-                    for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c), "T")) {
-                        if (cTrouve != null) {
-                            if (cTrouve.getValeur() == 1) {
-                                ArrayList<Case> aRayer = new ArrayList<Case>();
-                                aRayer.add(c);
-                                aRayer.add(cTrouve);
-                                this.rayerCases(aRayer);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Nombre reliés par 2 (ex 3 et 2 pour 5, 4 et 1 pour 5)
-        for (Case c : this.lesCases) {
-            if (!c.estUtilisee()) {
-                for (int i = this.valeurSomme - 2; i > 1; i--) {
-                    if (c.getValeur() == i) {
-                        for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c), "T")) {
-                            if (cTrouve != null) {
-                                if (cTrouve.getValeur() == this.valeurSomme - i) {
-                                    ArrayList<Case> aRayer = new ArrayList<Case>();
-                                    aRayer.add(c);
-                                    aRayer.add(cTrouve);
-                                    this.rayerCases(aRayer);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-
-
-
-
-        // Ensuite : Trouver nombre à trouver - 2 et regarder si il y a soit en caseAutour 2 soit un 1 qui a pour caseAutour un 1 aussi
-        // (en rayant dans le même sens, donc ajouter une variable pour le sens et éventuellement refaire une fonction)
-    }
-
-    public void relierCases(){
-
-        // Les cases avec relier directement
-        for(Case c : this.lesCases){
-            if(!c.estUtilisee()) {
-                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c), "T")) {
-                    if (c.getValeur() + ct.getValeur() == this.valeurSomme) {
-                        ArrayList<Case> aRayer = new ArrayList<Case>();
-                        aRayer.add(c);
-                        aRayer.add(ct);
-                        this.rayerCases(aRayer);
-                        break;
-                    }
-                }
-            }
-        }
-
-        //Case à relier séparé par une case
-        for(Case c : this.lesCases){
-            if(!c.estUtilisee()) {
-                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c), "T")){
-                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct), "T")){
-                        if ( !ct2.estUtilisee() && !ct.estUtilisee()&& c.getValeur()+ct.getValeur()+ct2.getValeur()==this.valeurSomme){
-                            ArrayList<Case> aRayer = new ArrayList<Case>();
-                            aRayer.add(c);
-                            aRayer.add(ct);
-                            aRayer.add(ct2);
-                            this.rayerCases(aRayer);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        //Case à relier séparé par deux cases
-        for(Case c : this.lesCases){
-            if(!c.estUtilisee()) {
-                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c), "T")){
-                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct), "T")){
-                        for (Case ct3 : lesCasesAutour(this.lesCases.indexOf(ct2), "T")){
-                            if ( !ct3.estUtilisee() && !ct2.estUtilisee() && !ct.estUtilisee()&& ct3.getValeur()+c.getValeur()+ct.getValeur()+ct2.getValeur()==this.valeurSomme){
-                                ArrayList<Case> aRayer = new ArrayList<Case>();
-                                aRayer.add(c);
-                                aRayer.add(ct);
-                                aRayer.add(ct2);
-                                aRayer.add(ct3);
-                                this.rayerCases(aRayer);
-                                break;
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-
-
     }
 
 
@@ -698,5 +570,4 @@ public class GrilleJeu
 
         return aRetourner;
     }
-
 }
