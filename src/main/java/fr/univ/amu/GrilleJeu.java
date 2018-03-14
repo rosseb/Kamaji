@@ -202,7 +202,7 @@ public class GrilleJeu
     // On retourne true si on a rayer des cases pour savoir si cela sert à quelque chose de rappeler la fonction ou pas
     public boolean trouverCasObligatoires() {
         boolean modifs = false;
-        int indexDeLaCase = -1;
+        int indexDeLaCase;
 
         // Pour les nombres reliés par deux
         for (int i = 1; i < this.valeurSomme / 2 + 1; i++) {
@@ -213,7 +213,7 @@ public class GrilleJeu
                     if (c.getValeur() == this.valeurSomme - i) {
                         ArrayList<Case> aRayer = new ArrayList<Case>();
                         aRayer.add(c);
-                        aRayer.add(this.trierCasesAutour(this.lesCasesAutour(indexDeLaCase), i));
+                        aRayer.add(this.trierCasesAutour(this.lesCasesAutour(indexDeLaCase, "T"), i));
 
                         // Si trierCasesAutour n'a pas retourné null on raye
                         if (!aRayer.contains(null)) {
@@ -224,6 +224,101 @@ public class GrilleJeu
                 }
             }
         }
+
+        // Pour les nombres reliés par 3 ou plus
+        // Si on ne vient pas de modifier quelque chose, sinon ça attendra le tour d'après
+        if (!modifs) {
+            // Sens possibles :
+            // Ligne : à gauche OU à droite de la case ---- en bas OU au dessus de la case
+            // Tests : Juste à gauche (1), juste à droite (2), juste en bas (3), juste en haut (4), a gauche puis à droite (5), en haut puis en bas (6)
+
+            // Diagonale : avant ou après en diagonale gauche ou droite
+            // tests : Diagonale droite juste en bas (7), diagonale droite juste en haut (8), diagonale gauche juste en bas (9), diagonale gauche juste en haut (10), diagonale avant après x2 (12)
+
+            // On test toutes les solutions possible, si il y en a plus que une on ne fait rien
+            int solutionsTrouvees = 0;
+            Case caseTestee = new Case(0);
+            indexDeLaCase = -1;
+            ArrayList<Case> aRayer = new ArrayList<Case>();
+
+            // On parcours toutes les cases
+            for (Case c : this.lesCases) {
+                indexDeLaCase++;
+
+                if (!c.estUtilisee()) {
+
+                    int sommeAtrouver = this.valeurSomme - c.getValeur();
+                    int sommeEnCours = 0;
+
+                    // On test nos 12 cas (note : la fonction lesCasesAutour retourne soit une case soit rien du tout si elle est déjà utilisée)
+                    for (int i = 1; i < 13 && solutionsTrouvees < 2; i++) {
+                        switch (i) {
+                            case 1:
+                                // Tant que la sommeAtrouver est inférieur à la somme qu'on a déjà réussi à "construire" avec les cases, on cherche plus loin
+                                int indexCaseTestee = indexDeLaCase;
+                                while (sommeAtrouver > sommeEnCours && indexCaseTestee > 0) {
+                                    if (this.lesCasesAutour(indexCaseTestee, "G").size() != 0)
+                                        caseTestee = this.lesCasesAutour(indexCaseTestee, "G").get(0);
+                                    else
+                                        caseTestee = null;
+
+                                    if (caseTestee != null) {
+                                        if (caseTestee.getValeur() <= sommeAtrouver - sommeEnCours) {
+                                            // On se prépare pour tester plus loin (si la caleur de la case était égale à SommeAtrouver - sommeEnCours la boucle s'arrêtera donc ce n'est pas grave de laisser
+                                            // indexCaseTestee = ...
+                                            indexCaseTestee = this.lesCases.indexOf(caseTestee);
+                                            sommeEnCours += caseTestee.getValeur();
+
+                                            aRayer.add(c);
+                                            aRayer.add(caseTestee);
+
+                                            solutionsTrouvees++;
+                                        }
+                                        else
+                                            aRayer = new ArrayList<Case>();
+                                    }
+                                    else
+                                        indexCaseTestee = -1;
+                                }
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                            case 5:
+                                break;
+                            case 6:
+                                break;
+                            case 7:
+                                break;
+                            case 8:
+                                break;
+                            case 9:
+                                break;
+                            case 10:
+                                break;
+                            case 11:
+                                break;
+                            case 12:
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+            }
+
+            // Si on a trouvé qu'une solution
+            if (solutionsTrouvees == 1) {
+                this.rayerCases(aRayer);
+            }
+        }
+
+
+
         return modifs;
     }
 
@@ -251,7 +346,7 @@ public class GrilleJeu
         for (Case c : this.lesCases) {
             if (!c.estUtilisee()) {
                 if (c.getValeur() == this.valeurSomme - 1) {
-                    for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c))) {
+                    for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c), "T")) {
                         if (cTrouve != null) {
                             if (cTrouve.getValeur() == 1) {
                                 ArrayList<Case> aRayer = new ArrayList<Case>();
@@ -271,7 +366,7 @@ public class GrilleJeu
             if (!c.estUtilisee()) {
                 for (int i = this.valeurSomme - 2; i > 1; i--) {
                     if (c.getValeur() == i) {
-                        for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c))) {
+                        for (Case cTrouve : this.lesCasesAutour(this.lesCases.indexOf(c), "T")) {
                             if (cTrouve != null) {
                                 if (cTrouve.getValeur() == this.valeurSomme - i) {
                                     ArrayList<Case> aRayer = new ArrayList<Case>();
@@ -301,7 +396,7 @@ public class GrilleJeu
         // Les cases avec relier directement
         for(Case c : this.lesCases){
             if(!c.estUtilisee()) {
-                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c))) {
+                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c), "T")) {
                     if (c.getValeur() + ct.getValeur() == this.valeurSomme) {
                         ArrayList<Case> aRayer = new ArrayList<Case>();
                         aRayer.add(c);
@@ -316,8 +411,8 @@ public class GrilleJeu
         //Case à relier séparé par une case
         for(Case c : this.lesCases){
             if(!c.estUtilisee()) {
-                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c))){
-                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct))){
+                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c), "T")){
+                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct), "T")){
                         if ( !ct2.estUtilisee() && !ct.estUtilisee()&& c.getValeur()+ct.getValeur()+ct2.getValeur()==this.valeurSomme){
                             ArrayList<Case> aRayer = new ArrayList<Case>();
                             aRayer.add(c);
@@ -334,9 +429,9 @@ public class GrilleJeu
         //Case à relier séparé par deux cases
         for(Case c : this.lesCases){
             if(!c.estUtilisee()) {
-                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c))){
-                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct))){
-                        for (Case ct3 : lesCasesAutour(this.lesCases.indexOf(ct2))){
+                for (Case ct : lesCasesAutour(this.lesCases.indexOf(c), "T")){
+                    for (Case ct2 : lesCasesAutour(this.lesCases.indexOf(ct), "T")){
+                        for (Case ct3 : lesCasesAutour(this.lesCases.indexOf(ct2), "T")){
                             if ( !ct3.estUtilisee() && !ct2.estUtilisee() && !ct.estUtilisee()&& ct3.getValeur()+c.getValeur()+ct.getValeur()+ct2.getValeur()==this.valeurSomme){
                                 ArrayList<Case> aRayer = new ArrayList<Case>();
                                 aRayer.add(c);
@@ -358,7 +453,7 @@ public class GrilleJeu
 
 
     // Retourne les cases autour de la case passée en paramètre = permet de connaitre les nombres autour d'elle
-    public ArrayList<Case> lesCasesAutour(int numeroCaseEnCours/*, String sens*/) {
+    public ArrayList<Case> lesCasesAutour(int numeroCaseEnCours, String sens) {
         ArrayList<Case> aRetourner = new ArrayList<Case>();
         /* Les cases à retourner sont les suivantes :
               - Gauche = Case -1
@@ -411,105 +506,107 @@ public class GrilleJeu
         boolean bordHaut = this.largeurGrille >= numeroCaseEnCours;
         boolean bordBas = this.lesCases.size() - this.largeurGrille <= numeroCaseEnCours;
 
-        // Détecter bord gauche
-        if (bordGauche) {
-            if (/*(sens.equals("T") || sens.equals("D")) &&*/ caseDroite <= this.lesCases.size() && caseDroite > 0)
-                aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (/*(sens.equals("T") || sens.equals("H")) && */ caseHaut <= this.lesCases.size() && caseHaut > 0)
-                aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (/*(sens.equals("T") || sens.equals("B")) && */caseBas <= this.lesCases.size() && caseBas > 0)
-                aRetourner.add(this.lesCases.get(caseBas));
+            // Détecter bord gauche
+            if (bordGauche) {
+                if (((sens.equals("T") || sens.equals("D"))) && caseDroite <= this.lesCases.size() && caseDroite > 0)
+                    aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (/*(sens.equals("T") || sens.equals("HG")) && */caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
+                if (((sens.equals("T") || sens.equals("H"))) && caseHaut <= this.lesCases.size() && caseHaut > 0)
+                    aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (/*(sens.equals("T") || sens.equals("BG")) && */caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
-        }
-        // Détecter le bord droit
-        else if (bordDroit) {
-            if (/*(sens.equals("T") || sens.equals("G")) &&*/ caseGauche <= this.lesCases.size() && caseGauche > 0)
-                aRetourner.add(this.lesCases.get(caseGauche));
+                if (((sens.equals("T") || sens.equals("B"))) && caseBas <= this.lesCases.size() && caseBas > 0)
+                    aRetourner.add(this.lesCases.get(caseBas));
 
-            if (/*(sens.equals("T") || sens.equals("H")) &&*/caseHaut <= this.lesCases.size() && caseHaut > 0)
-                aRetourner.add(this.lesCases.get(caseHaut));
+                if (((sens.equals("T") || sens.equals("HD"))) && caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
 
-            if (/*(sens.equals("T") || sens.equals("B")) &&*/caseBas <= this.lesCases.size() && caseBas > 0)
-                aRetourner.add(this.lesCases.get(caseBas));
+                if (((sens.equals("T") || sens.equals("BD"))) && caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
+            }
+            // Détecter le bord droit
+            else if (bordDroit) {
+                if (((sens.equals("T") || sens.equals("G"))) && caseGauche <= this.lesCases.size() && caseGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (/*(sens.equals("T") || sens.equals("HG")) &&*/caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
+                if (((sens.equals("T") || sens.equals("H"))) && caseHaut <= this.lesCases.size() && caseHaut > 0)
+                    aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (/*(sens.equals("T") || sens.equals("BG")) &&*/caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
+                if (((sens.equals("T") || sens.equals("B"))) && caseBas <= this.lesCases.size() && caseBas > 0)
+                    aRetourner.add(this.lesCases.get(caseBas));
 
-        }
+                if (((sens.equals("T") || sens.equals("HG"))) && caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
 
-        // Détecter bord haut
-        else if (bordHaut) {
-            if (/*(sens.equals("T") || sens.equals("G")) &&*/caseGauche <= this.lesCases.size() && caseGauche > 0)
-                aRetourner.add(this.lesCases.get(caseGauche));
+                if (((sens.equals("T") || sens.equals("BG"))) && caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
 
-            if (/*(sens.equals("T") || sens.equals("D")) &&*/caseDroite <= this.lesCases.size() && caseDroite > 0)
-                aRetourner.add(this.lesCases.get(caseDroite));
+            }
 
-            if (/*(sens.equals("T") || sens.equals("B")) &&*/caseBas <= this.lesCases.size() && caseBas > 0)
-                aRetourner.add(this.lesCases.get(caseBas));
+            // Détecter bord haut
+            else if (bordHaut) {
+                if (((sens.equals("T") || sens.equals("G"))) && caseGauche <= this.lesCases.size() && caseGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (/*(sens.equals("T") || sens.equals("BG")) &&*/caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
+                if (((sens.equals("T") || sens.equals("D"))) && caseDroite <= this.lesCases.size() && caseDroite > 0)
+                    aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (/*(sens.equals("T") || sens.equals("BD")) &&*/caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
-        }
+                if (((sens.equals("T") || sens.equals("B"))) && caseBas <= this.lesCases.size() && caseBas > 0)
+                    aRetourner.add(this.lesCases.get(caseBas));
 
-        // Détecter bord bas
-        else if (bordBas) {
-            if (/*(sens.equals("T") || sens.equals("G")) &&*/caseGauche <= this.lesCases.size() && caseGauche > 0)
-                aRetourner.add(this.lesCases.get(caseGauche));
+                if (((sens.equals("T") || sens.equals("BG"))) && caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
 
-            if (/*(sens.equals("T") || sens.equals("D")) &&*/caseDroite <= this.lesCases.size() && caseDroite > 0)
-                aRetourner.add(this.lesCases.get(caseDroite));
+                if (((sens.equals("T") || sens.equals("BD"))) && caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
+            }
 
-            if (/*(sens.equals("T") || sens.equals("H")) &&*/caseHaut <= this.lesCases.size() && caseHaut > 0)
-                aRetourner.add(this.lesCases.get(caseHaut));
+            // Détecter bord bas
+            else if (bordBas) {
+                if (((sens.equals("T") || sens.equals("G"))) && caseGauche <= this.lesCases.size() && caseGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (/*(sens.equals("T") || sens.equals("HG")) &&*/caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
+                if (((sens.equals("T") || sens.equals("D"))) && caseDroite <= this.lesCases.size() && caseDroite > 0)
+                    aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (/*(sens.equals("T") || sens.equals("HD")) &&*/caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
-        }
+                if (((sens.equals("T") || sens.equals("H"))) && caseHaut <= this.lesCases.size() && caseHaut > 0)
+                    aRetourner.add(this.lesCases.get(caseHaut));
 
-        else {
-            // Signifie que ce n'est pas un cas particulier
+                if (((sens.equals("T") || sens.equals("HG"))) && caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
 
-            if (/*(sens.equals("T") || sens.equals("G")) && */caseGauche <= this.lesCases.size() && caseGauche > 0)
-                aRetourner.add(this.lesCases.get(caseGauche));
+                if (((sens.equals("T") || sens.equals("HD"))) && caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
+            } else {
+                // Signifie que ce n'est pas un cas particulier
 
-            if (/*(sens.equals("T") || sens.equals("D")) && */caseDroite <= this.lesCases.size() && caseDroite > 0)
-                aRetourner.add(this.lesCases.get(caseDroite));
+                if (((sens.equals("T") || sens.equals("G"))) && caseGauche <= this.lesCases.size() && caseGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseGauche));
 
-            if (/*(sens.equals("T") || sens.equals("H")) && */caseHaut <= this.lesCases.size() && caseHaut > 0)
-                aRetourner.add(this.lesCases.get(caseHaut));
+                if (((sens.equals("T") || sens.equals("D"))) && caseDroite <= this.lesCases.size() && caseDroite > 0)
+                    aRetourner.add(this.lesCases.get(caseDroite));
 
-            if (/*(sens.equals("T") || sens.equals("B")) &&*/ caseBas <= this.lesCases.size() && caseBas > 0)
-                aRetourner.add(this.lesCases.get(caseBas));
+                if (((sens.equals("T") || sens.equals("H"))) && caseHaut <= this.lesCases.size() && caseHaut > 0)
+                    aRetourner.add(this.lesCases.get(caseHaut));
 
-            if (/*(sens.equals("T") || sens.equals("HG")) &&*/ caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
+                if (((sens.equals("T") || sens.equals("B"))) && caseBas <= this.lesCases.size() && caseBas > 0)
+                    aRetourner.add(this.lesCases.get(caseBas));
 
-            if (/*(sens.equals("T") || sens.equals("HD")) && */caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
+                if (((sens.equals("T") || sens.equals("HG"))) && caseDiagonaleHautGauche <= this.lesCases.size() && caseDiagonaleHautGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleHautGauche));
 
-            if (/*(sens.equals("T") || sens.equals("BG")) && */caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
+                if (((sens.equals("T") || sens.equals("HD"))) && caseDiagonaleHautDroit <= this.lesCases.size() && caseDiagonaleHautDroit > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleHautDroit));
 
-            if (/*(sens.equals("T") || sens.equals("BD")) && */caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
-                aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
-        }
+                if (((sens.equals("T") || sens.equals("BG"))) && caseDiagonaleBasGauche <= this.lesCases.size() && caseDiagonaleBasGauche > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleBasGauche));
+
+                if (((sens.equals("T") || sens.equals("BD"))) && caseDiagonaleBasDroite <= this.lesCases.size() && caseDiagonaleBasDroite > 0)
+                    aRetourner.add(this.lesCases.get(caseDiagonaleBasDroite));
+            }
+
+
 
         // Supprimer les cases déjà rayées
         for (int i = 0; i < aRetourner.size(); i++) {

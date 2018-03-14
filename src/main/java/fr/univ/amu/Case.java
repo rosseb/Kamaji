@@ -43,10 +43,7 @@ public class Case {
 
     public boolean estUtilisee() {
         if (this.valeur == 1) {
-            if (this.raye >= 2)
-                return true;
-            else
-                return false;
+            return false;
         }
         else {
             if (this.raye >= 1)
