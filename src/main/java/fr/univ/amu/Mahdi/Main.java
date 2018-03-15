@@ -1,4 +1,4 @@
-package JeuKamaji;
+package fr.univ.amu.Mahdi;
 
 public class Main {
 	public static void main(String[] args) {

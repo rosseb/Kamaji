@@ -1,4 +1,4 @@
-package JeuKamaji;
+package fr.univ.amu.Mahdi;
 
 import java.util.ArrayList;
 
