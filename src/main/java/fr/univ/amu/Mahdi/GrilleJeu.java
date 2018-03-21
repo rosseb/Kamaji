@@ -227,7 +227,7 @@ public void ClickVerification(){
 		int resultat =0;
 		for (i=Arriere.size()-1;i>=0;i--){
 		resultat+= Integer.parseInt(Arriere.get(i).getText());
-		if (resultat==5) {	
+		if (resultat==TestVerif) {	
 			for(j = i; j <= k; j++) {
 			Arriere.get(i).setEnabled(true);
 			Arriere.get(i).setForeground(Color.BLACK);		
