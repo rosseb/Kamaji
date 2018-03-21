@@ -31,9 +31,10 @@ public class ChoixGrille extends JPanel implements ActionListener {
 	
 	JLabel Grille8= new JLabel("Grille (8/8) :");
 	JButton Grille3= new JButton("8/8");
-
-
+	int choix;
+	
 public ChoixGrille() {
+	
 	
 	grille.setBounds(40,40,300,300);
 	grille.setTitle("Jeu Kamaji");
@@ -45,7 +46,6 @@ public ChoixGrille() {
 
     JPanel PN1 = new JPanel();
 	PN1.add(LBL1);
-
     	  
 	JPanel PN = new JPanel(new GridLayout(3,2));
 	PN.add(Grille5);
@@ -65,45 +65,39 @@ public ChoixGrille() {
 	grille.add(PN,BorderLayout.SOUTH);  
 	
 	PN.setBackground(Color.PINK);
-
-
+ 
 	grille.pack();
 
 }
-	
+
+public void setChoix(int a) {
+	 this.choix=a;
+}
+
 public  void  actionPerformed(ActionEvent e){			
 	Object  source = e.getSource();	
 	 
 	if (source==Grille1) {
-		
-		GrilleJeu s = new GrilleJeu();
-		 s.setVisible(true);
-		 grille.dispose();
-	
+		GrilleJeu s = new GrilleJeu(5);
+		 s.lbl.setText("5");
+		 s.setVisible(true);		
 	}
 	
 	if (source==Grille2) {
-		
-		
-	}
+		GrilleJeu s = new GrilleJeu(7);
+		 s.setVisible(true);
+		 s.lbl.setText("7");
+		 grille.dispose();
+		 	}
 	
 	if (source==Grille3) {
-		
-	
+		GrilleJeu s = new GrilleJeu(8);
+		 s.setVisible(true);
+		 s.lbl.setText("8");
+		 grille.dispose();
+			
 	}
-	
-	
-	
-	
-	
-	
 }
-
-
-
-
-
-
 
 
 
