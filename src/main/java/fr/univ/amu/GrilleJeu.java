@@ -1,6 +1,7 @@
 package fr.univ.amu;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class GrilleJeu
@@ -20,63 +21,40 @@ public class GrilleJeu
         this.largeurGrille = largeurGrille;
 
         // Créer tous les objets cases (la grille : http://prntscr.com/ht2bjl)
-        Case c1 = new Case(3);
-        Case c2 = new Case(3);
-        Case c3 = new Case(2);
-        Case c4 = new Case(2);
-        Case c5 = new Case(4);
-        Case c6 = new Case(3);
-        Case c7 = new Case(2);
-        Case c8 = new Case(1);
-        Case c9 = new Case(1);
-        Case c10 = new Case(3);
-        Case c11 = new Case(3);
-        Case c12 = new Case(2);
-        Case c13 = new Case(5);
-        Case c14 = new Case(2);
-        Case c15 = new Case(4);
-        Case c16 = new Case(3);
-        Case c17 = new Case(2);
-        Case c18 = new Case(2);
-        Case c19 = new Case(4);
-        Case c20 = new Case(2);
-        Case c21 = new Case(2);
-        Case c22 = new Case(4);
-        Case c23 = new Case(1);
-        Case c24 = new Case(3);
-        Case c25 = new Case(3);
+        Case[] grille = {new Case(3),
+                new Case(3),
+                new Case(2),
+                new Case(2),
+                new Case(4),
+                new Case(3),
+                new Case(2),
+                new Case(1),
+                new Case(1),
+                new Case(3),
+                new Case(3),
+                new Case(2),
+                new Case(5),
+                new Case(2),
+                new Case(4),
+                new Case(3),
+                new Case(2),
+                new Case(2),
+                new Case(4),
+                new Case(2),
+                new Case(2),
+                new Case(4),
+                new Case(1),
+                new Case(3),
+                new Case(3)};
 
         this.lesCases = new ArrayList<Case>();
         Case c0 = new Case(0);
         this.lesCases.add(c0);
-        this.lesCases.add(c1);
-        this.lesCases.add(c2);
-        this.lesCases.add(c3);
-        this.lesCases.add(c4);
-        this.lesCases.add(c5);
-        this.lesCases.add(c6);
-        this.lesCases.add(c7);
-        this.lesCases.add(c8);
-        this.lesCases.add(c9);
-        this.lesCases.add(c10);
-        this.lesCases.add(c11);
-        this.lesCases.add(c12);
-        this.lesCases.add(c13);
-        this.lesCases.add(c14);
-        this.lesCases.add(c15);
-        this.lesCases.add(c16);
-        this.lesCases.add(c17);
-        this.lesCases.add(c18);
-        this.lesCases.add(c19);
-        this.lesCases.add(c20);
-        this.lesCases.add(c21);
-        this.lesCases.add(c22);
-        this.lesCases.add(c23);
-        this.lesCases.add(c24);
-        this.lesCases.add(c25);
+        lesCases.addAll(Arrays.asList(grille));
 
         // Rayer la case 5 pour dire qu'on ne peut pas l'utiliser
-        c13.rayer();
+        grille[12].rayer();
+
     }
 
 
