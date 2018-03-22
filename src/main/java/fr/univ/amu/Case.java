@@ -15,7 +15,7 @@ public class Case {
 
 
     // Pour colorier les cases
-    public String getCouleur(int indice){
+    public String getCouleur(int indice) {
 
         if (indice==1)
             return "\u001B[30m";

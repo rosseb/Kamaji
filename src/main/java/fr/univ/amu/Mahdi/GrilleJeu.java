@@ -169,7 +169,7 @@ public void ClickVerification(){
 			
 		
 		if (clicked !=TestVerif) {
-			JOptionPane.showMessageDialog(this,"La somme des cases choisies est differente de 5","Inane error",JOptionPane.ERROR_MESSAGE);					
+			JOptionPane.showMessageDialog(this,"La somme des cases choisies est differente de celle attendue.","Somme incorrecte",JOptionPane.ERROR_MESSAGE);
 			for (JButton button : Unselect)
 				button.setForeground(Color.black);
 		}
