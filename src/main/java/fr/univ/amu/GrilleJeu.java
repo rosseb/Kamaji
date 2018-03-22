@@ -11,17 +11,16 @@ public class GrilleJeu
     private ArrayList<Case> lesCases;
     private int largeurGrille;
 
-    public GrilleJeu(int valeurSomme, int largeurGrille) {
-        this.valeurSomme = valeurSomme;
+    public GrilleJeu(int largeurGrille) {
         nbCasesRaye=0;
-        this.constituerGrille(largeurGrille);
+        this.valeurSomme = this.constituerGrille(largeurGrille);
     }
 
-    private void constituerGrille(int largeurGrille) {
+    private int constituerGrille(int largeurGrille) {
         this.largeurGrille = largeurGrille;
 
-        // Créer tous les objets cases (la grille : http://prntscr.com/ht2bjl)
-        Case[] grille = {new Case(3),
+        Case[] grille = {new Case(0),
+                new Case(3),
                 new Case(3),
                 new Case(2),
                 new Case(2),
@@ -47,14 +46,20 @@ public class GrilleJeu
                 new Case(3),
                 new Case(3)};
 
+
         this.lesCases = new ArrayList<Case>();
-        Case c0 = new Case(0);
-        this.lesCases.add(c0);
-        lesCases.addAll(Arrays.asList(grille));
+        this.lesCases.addAll(Arrays.asList(grille));
 
-        // Rayer la case 5 pour dire qu'on ne peut pas l'utiliser
-        grille[12].rayer();
+        // Rayer la case pivot pour dire qu'on ne peut pas l'utiliser
+        this.lesCases.get(13).rayer();
 
+
+        // On récupère la valeur somme (seule case rayée de la liste)
+        for (Case c : lesCases)
+            if (c.estUtilisee())
+                return c.getValeur();
+
+        return 0;
     }
 
 
@@ -119,7 +124,7 @@ public class GrilleJeu
         // for et pas foreach car on ne veut pas afficher le premier element (une case 0)
         for (int i = 1; i < this.lesCases.size(); i++) {
             compteur++;
-            if (compteur == 5) {
+            if (compteur == this.largeurGrille) {
                 compteur = 0;
                 this.lesCases.get(i).afficherCase();
                 ecrireDansConsole("");
@@ -143,9 +148,7 @@ public class GrilleJeu
         // On affiche la grille non résolue
         this.afficherLaGrille();
 
-
-
-        ecrireDansConsole("");
+        ecrireDansConsole("\nLancement de l'algorithme de résolution :");
         while(trouverCasObligatoires())
             this.trouverCasObligatoires();
 
@@ -224,7 +227,7 @@ public class GrilleJeu
 
 
                     // On test nos 12 cas (note : la fonction lesCasesAutour retourne soit une case soit rien du tout si elle est déjà utilisée)
-                    for (int i = 1; i < 5; i++) {
+                    for (int i = 1; i < this.valeurSomme; i++) {
                         switch (i) {
                             case 1:
                                 // Tant que la sommeAtrouver est inférieur à la somme qu'on a déjà réussi à "construire" avec les cases, on cherche plus loin
@@ -352,6 +355,7 @@ public class GrilleJeu
                 if (solutionsTrouvees == 1) {
                     // On élimine les doublons
                     this.rayerCases(premiereSolution);
+                    modifs = true;
                 }
             }
         }
