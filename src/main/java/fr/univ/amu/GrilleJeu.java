@@ -166,7 +166,7 @@ public class GrilleJeu
         this.afficherLaGrille();
 
 
-        // Debug :
+
         ecrireDansConsole("");
         while(trouverCasObligatoires())
             this.trouverCasObligatoires();
@@ -234,7 +234,6 @@ public class GrilleJeu
             ArrayList<Case> premiereSolution = new ArrayList<Case>();
             int indexCaseTestee = 0;
 
-            int debug = 0;
 
             // On parcours toutes les cases
             for (Case c : this.lesCases) {
@@ -245,9 +244,6 @@ public class GrilleJeu
                     int sommeAtrouver = this.valeurSomme - c.getValeur();
                     int sommeEnCours = 0;
 
-                    //Debug :
-                    if (indexDeLaCase == 10)
-                        debug = 1;
 
                     // On test nos 12 cas (note : la fonction lesCasesAutour retourne soit une case soit rien du tout si elle est déjà utilisée)
                     for (int i = 1; i < 5; i++) {
